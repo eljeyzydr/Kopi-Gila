@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, request, redirect, url_for
+from flask import Blueprint, render_template, session, request, redirect, url_for, flash
 
 main = Blueprint('main', __name__)
 
@@ -26,11 +26,13 @@ def menu():
 @main.route('/cart', methods=['GET', 'POST'])
 def cart():
     cart = session.get('cart', [])
+    message = None
     if request.method == 'POST':
         seat = request.form.get('seat')
-        message = f"Order for seat #{seat} confirmed!" if seat else "Please select a seat."
-        return render_template('cart.html', cart=cart, message=message)
-    return render_template('cart.html', cart=cart)
+        # Simpan data ke database jika diperlukan
+        message = f"Pesanan Anda untuk kursi {seat} telah dikonfirmasi!"
+        session.pop('cart', None)
+    return render_template('cart.html', cart=cart, message=message)
 
 @main.route('/products')
 def products():
@@ -40,9 +42,17 @@ def products():
 def review():
     return render_template('review.html')
 
-@main.route('/contact')
+@main.route('/contact', methods=['GET', 'POST'])
 def contact():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+        # TODO: Simpan ke database atau kirim via email
+        flash('Pesan Anda telah dikirim. Terima kasih!', 'success')
+        return redirect(url_for('main.contact'))
     return render_template('contact.html')
+
 
 @main.route('/blogs')
 def blogs():
