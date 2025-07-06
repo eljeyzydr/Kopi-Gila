@@ -1,37 +1,117 @@
 {% extends 'base.html' %}
 {% block content %}
-<section style="padding: 50px; background-color: #F6EEE3;">
-    <h2 style="text-align: center; color: #2C2421;">Keranjang Pemesanan</h2>
+
+<style>
+    .cart-section {
+        background-color: #F6EEE3;
+        padding: 80px 30px;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    .cart-title {
+        text-align: center;
+        font-size: 40px;
+        color: #4B3D24;
+        margin-bottom: 40px;
+    }
+
+    .cart-list {
+        list-style: none;
+        padding: 0;
+        max-width: 600px;
+        margin: 0 auto 40px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-list li {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .cart-list li:last-child {
+        border-bottom: none;
+    }
+
+    .cart-form {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .cart-form label {
+        font-size: 16px;
+        color: #4B3D24;
+    }
+
+    .cart-form select {
+        margin-top: 10px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    .cart-form button {
+        margin-top: 20px;
+        background-color: #4B3D24;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .cart-form button:hover {
+        background-color: #3a2f1b;
+    }
+
+    .cart-message {
+        margin-top: 30px;
+        text-align: center;
+        font-weight: bold;
+        color: green;
+        font-size: 16px;
+    }
+
+    .empty-message {
+        text-align: center;
+        font-size: 18px;
+        color: #555;
+        margin-top: 50px;
+    }
+</style>
+
+<section class="cart-section">
+    <h2 class="cart-title">Keranjang Pemesanan</h2>
 
     {% if cart %}
-    <ul style="list-style: none; padding: 0; text-align: center; margin-top: 30px;">
+    <ul class="cart-list">
         {% for item in cart %}
-        <li style="margin-bottom: 10px; font-size: 18px;">{{ item }}</li>
+        <li>{{ item }}</li>
         {% endfor %}
     </ul>
 
-    <form method="POST" style="text-align: center; margin-top: 40px;">
+    <form method="POST" class="cart-form">
         <label for="seat">Pilih Nomor Kursi (1-20):</label><br>
-        <select name="seat" required style="margin-top: 10px; padding: 5px 10px;">
+        <select name="seat" required>
             {% for i in range(1, 21) %}
             <option value="{{ i }}">Kursi {{ i }}</option>
             {% endfor %}
-        </select><br><br>
-        <button type="submit" style="
-            background-color: #6F4E37;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        ">Bayar & Konfirmasi</button>
+        </select><br>
+        <button type="submit">Bayar & Konfirmasi</button>
     </form>
 
     {% if message %}
-    <p style="margin-top: 30px; color: green; font-weight: bold;">{{ message }}</p>
+    <p class="cart-message">{{ message }}</p>
     {% endif %}
+
     {% else %}
-    <p style="text-align: center; margin-top: 30px;">Belum ada pesanan.</p>
+    <p class="empty-message">Belum ada pesanan.</p>
     {% endif %}
 </section>
 {% endblock %}
