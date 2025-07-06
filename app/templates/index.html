@@ -1,0 +1,28 @@
+<!-- app/templates/index.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<section style="
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+    height: 100vh; 
+    background-image: url('{{ url_for('static', filename='images/background-kopi.jpg') }}');
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+">
+    <div style="text-align: right; max-width: 500px; margin-right: 60px; background-color: rgba(0, 0, 0, 0.6); padding: 30px; border-radius: 8px;">
+        <h1 style="font-size: 48px; color: #E1C6B2;">Nikmati Kopi Terbaik dari Seluruh Nusantara</h1>
+        <p style="font-size: 20px; margin-top: 20px; color: #fff;">
+            Kami hanya menyajikan biji kopi pilihan terbaik lokal untuk kenikmatan luar biasa di kedai Gila Kopi.
+        </p>
+        <a href="{{ url_for('main.menu') }}" 
+           class="btn-order mt-4 d-inline-block" 
+           style="display: inline-block; margin-top: 20px; background-color: #A76545; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+            Order Now
+        </a>
+    </div>
+</section>
+{% endblock %}

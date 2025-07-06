@@ -1,0 +1,80 @@
+<!-- app/templates/about.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- SECTION 1: Background Gambar dengan Konten Kiri -->
+<section style="min-height: 100vh; display: flex; align-items: center; background-image: url('{{ url_for('static', filename='images/2632475.jpg') }}'); background-size: cover; background-position: center;">
+    <div style="flex: 1; padding-left: 80px;">
+        <h1 style="font-size: 48px; color: #E1C6B2;">Kenali Gila Kopi</h1>
+        <p style="font-size: 18px; max-width: 600px; margin-top: 20px;">
+            Kami hadir untuk menyajikan rasa kopi terbaik dari seluruh Indonesia. Setiap biji kopi adalah cerita, dan setiap tegukan adalah pengalaman yang kami rawat dengan cinta.
+        </p>
+        <a href="{{ url_for('main.menu') }}" class="btn-order mt-4 d-inline-block">Lihat Menu</a>
+    </div>
+</section>
+
+<!-- SECTION 2: Dua Kolom: Gambar Kiri, Konten Kanan -->
+<section style="min-height: 100vh; display: flex; background-color: #2C2421;">
+    <!-- Gambar Kiri -->
+    <div style="flex: 1;">
+        <img src="{{ url_for('static', filename='images/5043141.jpg') }}" alt="kopi indonesia" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+
+    <!-- Konten Kanan -->
+    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px;">
+        <h2 style="font-size: 36px; color: #E1C6B2;">Kisah Kami</h2>
+        <p style="font-size: 18px; line-height: 1.7; margin-top: 20px;">
+            Gila Kopi bukan sekadar kedai. Kami adalah komunitas pecinta kopi yang menghargai kualitas dan cerita di balik setiap biji.
+            Kami memilih mitra petani lokal yang terbaik, memastikan keberlanjutan dan rasa yang autentik. Selamat datang di perjalanan rasa.
+        </p>
+        <a href="{{ url_for('main.contact') }}" class="btn-order mt-4 d-inline-block">Hubungi Kami</a>
+    </div>
+</section>
+
+<!-- SECTION 3: Tim Pendiri Gila Kopi -->
+<section style='
+    min-height: 100vh;
+    background-image: url("{{ url_for('static', filename='images/kopi.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+'>
+    <!-- Overlay Gelap -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(44, 36, 33, 0.85); z-index: 1;"></div>
+
+    <!-- Konten -->
+    <div style="position: relative; z-index: 2; text-align: center; color: #E1C6B2;">
+        <h2 style="font-size: 36px; margin-bottom: 50px;">Pendiri Gila Kopi</h2>
+        <div style="display: flex; gap: 60px; flex-wrap: wrap; justify-content: center;">
+            <!-- Claus -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <h3>Claus Dominggo</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <img src="{{ url_for('static', filename='images/IMG_5776.jpg') }}" alt="Claus">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kevin -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <h3>Kevin Alexander</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <img src="{{ url_for('static', filename='images/WhatsApp Image 2025-07-07 at 01.42.27_78cdc15f.jpg') }}" alt="Kevin">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

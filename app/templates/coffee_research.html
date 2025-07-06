@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="bg-[#2C2421] text-[#E1C6B2] min-h-screen py-20 px-6">
+  <div class="max-w-4xl mx-auto text-center space-y-8">
+    <h1 class="text-4xl font-bold">Penelitian Tentang Kopi Lokal</h1>
+    <p class="text-lg">Kami mendalami dampak suhu seduh terhadap profil rasa dari biji kopi lokal seperti Gayo, Toraja, dan Kintamani. Penelitian ini menjadi dasar pendekatan barista kami dalam menyajikan kopi terbaik.</p>
+    <ul class="list-disc list-inside space-y-4">
+        <li>
+          <a href="https://www.researchgate.net/publication/345315113_Brew_temperature_at_fixed_brew_strength_and_extraction_has_little_impact_on_the_sensory_profile_of_drip_brew_coffee" target="_blank" class="text-[#E1C6B2] hover:underline">
+            Brew Temperature vs Sensory Profile (Scientific Reports, 2020)
+          </a>
+        </li>
+        <li>
+          <a href="https://www.mdpi.com/2304-8158/13/24/3995/pdf" target="_blank" class="text-[#E1C6B2] hover:underline">
+            Temperature & Storage Impact on Coffee Aroma (Foods, 2024)
+          </a>
+        </li>
+      </ul>
+    <a href="{{ url_for('static', filename='docs/jurnal_kopi.pdf') }}"
+       class="bg-[#E1C6B2] text-[#2C2421] px-6 py-3 rounded-full shadow hover:bg-[#9B7653] transition text-lg"
+       target="_blank">
+       📄 Buka Jurnal Penelitian
+    </a>
+  </div>
+</section>
+{% endblock %}
