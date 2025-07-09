@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Daftar Menu Kopi</h2>
+  <div class="row" id="menu-container"></div>
+</div>
+
+<script>
+fetch('http://localhost:5001/api/menu')
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById('menu-container');
+    data.forEach(item => {
+      container.innerHTML += `
+        <div class="col-md-4 mb-4">
+          <div class="card h-100" style="background-color: rgba(255,255,255,0.9); color: black;">
+            <img src="${item.image_url}" class="card-img-top">
+            <div class="card-body">
+              <h5>${item.name}</h5>
+              <p>${item.description}</p>
+              <p><strong>Rp ${Number(item.price).toLocaleString()}</strong></p>
+              <button class="btn btn-sm btn-warning order-btn"
+                      data-id="${item.id}">
+                Pesan
+              </button>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    document.querySelectorAll('.order-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const coffee_id = parseInt(button.dataset.id);
+
+        fetch('http://localhost:5001/api/cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            coffee_id: coffee_id,
+            quantity: 1
+          })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('HTTP error ' + res.status);
+          return res.json();
+        })
+        .then(data => {
+          if (data.message) {
+            alert('Berhasil menambahkan ke keranjang!');
+          } else {
+            alert('Gagal: ' + (data.error || 'Unknown error'));
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          alert('Terjadi kesalahan saat menambahkan ke keranjang.');
+        });
+      });
+    });
+  })
+  .catch(err => {
+    console.error('Gagal memuat menu:', err);
+    alert('Gagal memuat menu.');
+  });
+</script>
+{% endblock %}

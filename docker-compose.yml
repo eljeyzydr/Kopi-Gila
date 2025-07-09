@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./frontend:/app
+      - ./frontend/static/uploads:/app/static/uploads
+
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./backend:/app
+      - ./frontend/static/uploads:/app/frontend_uploads

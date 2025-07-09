@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-end" style="margin-top: 100px;">
+    <h1 style="font-size: 3rem; color: #ffffff;">Nikmati Kopi Pilihan Terbaik</h1>
+    <p style="font-size: 1.2rem;">Kualitas dari biji kopi lokal terbaik Indonesia</p>
+    <a href="{{ url_for('cart') }}" class="btn btn-warning mt-3" style="background-color: #CA7842; border: none;">Order Now</a>
+</div>
+{% endblock %}

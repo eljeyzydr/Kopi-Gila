@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Keranjang Belanja</h2>
+  
+  <!-- Table selection dropdown -->
+  <div class="mb-4">
+    <label for="table-select" class="form-label">Pilih Meja:</label>
+    <select id="table-select" class="form-select" style="width: auto;">
+      <option value="" disabled selected>Pilih nomor meja</option>
+      {% for i in range(1, 11) %}
+        <option value="{{ i }}">Meja {{ i }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div id="cart-container"></div>
+  <h4 id="cart-total" class="mt-3"></h4>
+  <button id="checkout-btn" class="btn btn-success mt-3" style="display: none;">Checkout</button>
+</div>
+
+<script>
+function loadCart() {
+  fetch('http://localhost:5001/api/cart')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('cart-container');
+      const totalElement = document.getElementById('cart-total');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      if (data.items.length === 0) {
+        container.innerHTML = '<p>Keranjang kosong.</p>';
+        totalElement.innerHTML = '';
+        checkoutBtn.style.display = 'none';
+        return;
+      }
+
+      container.innerHTML = data.items.map(item => `
+        <div class="card mb-3" style="background-color: rgba(255,255,255,0.9); color: black;">
+          <div class="card-body">
+            <h5>${item.name} (${item.type})</h5>
+            <p>Harga: Rp ${Number(item.price).toLocaleString('id-ID')} x ${item.quantity}</p>
+            <p>Subtotal: Rp ${Number(item.subtotal).toLocaleString('id-ID')}</p>
+          </div>
+        </div>
+      `).join('');
+
+      totalElement.innerHTML = `Total: Rp ${Number(data.total).toLocaleString('id-ID')}`;
+      checkoutBtn.style.display = 'block';
+    })
+    .catch(err => {
+      console.error('Gagal memuat keranjang:', err);
+      document.getElementById('cart-container').innerHTML = '<p>Gagal memuat keranjang.</p>';
+    });
+}
+
+document.getElementById('checkout-btn').addEventListener('click', () => {
+  const tableNumber = document.getElementById('table-select').value;
+  
+  // Validate table selection
+  if (!tableNumber) {
+    alert('Harap pilih nomor meja sebelum checkout.');
+    return;
+  }
+
+  fetch('http://localhost:5001/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tableNumber: parseInt(tableNumber) })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || `Checkout berhasil untuk Meja ${tableNumber}!`);
+    loadCart(); // Reload cart to show empty state
+    document.getElementById('table-select').value = ''; // Reset table selection
+  })
+  .catch(err => {
+    console.error('Gagal checkout:', err);
+    alert('Gagal melakukan checkout.');
+  });
+});
+
+loadCart();
+</script>
+{% endblock %}

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard – Gila Kopi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding: 2rem; background: #f8f9fa; }
+    img { max-width: 80px; }
+    h2 { margin-top: 2rem; margin-bottom: 1rem; }
+    .table th, .table td { vertical-align: middle; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-4">Admin Dashboard – Gila Kopi</h1>
+
+    <!-- Menu Section -->
+    <h2>Menu Kopi</h2>
+    <form id="menu-form" class="row g-2 mb-3" enctype="multipart/form-data">
+      <div class="col-md-3"><input name="name" class="form-control" placeholder="Nama Kopi" required></div>
+      <div class="col-md-2"><input name="price" type="number" class="form-control" placeholder="Harga" required></div>
+      <div class="col-md-3"><input name="description" class="form-control" placeholder="Deskripsi"></div>
+      <div class="col-md-2"><input name="image" type="file" class="form-control" accept="image/*"></div>
+      <div class="col-md-2"><button class="btn btn-primary w-100">Tambah Menu</button></div>
+    </form>
+    <table class="table table-bordered table-hover" id="menu-table">
+      <thead class="table-dark">
+        <tr><th>Nama</th><th>Harga</th><th>Deskripsi</th><th>Gambar</th><th>Aksi</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Product Section -->
+    <h2>Produk</h2>
+    <form id="product-form" class="row g-2 mb-3" enctype="multipart/form-data">
+      <div class="col-md-3"><input name="name" class="form-control" placeholder="Nama Produk" required></div>
+      <div class="col-md-2"><input name="price" type="number" class="form-control" placeholder="Harga" required></div>
+      <div class="col-md-3"><input name="description" class="form-control" placeholder="Deskripsi"></div>
+      <div class="col-md-2"><input name="image" type="file" class="form-control" accept="image/*"></div>
+      <div class="col-md-2"><button class="btn btn-success w-100">Tambah Produk</button></div>
+    </form>
+    <table class="table table-bordered table-hover" id="product-table">
+      <thead class="table-dark">
+        <tr><th>Nama</th><th>Harga</th><th>Deskripsi</th><th>Gambar</th><th>Aksi</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Edit Coffee Modal -->
+    <div class="modal fade" id="editCoffeeModal" tabindex="-1" aria-labelledby="editCoffeeModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editCoffeeModalLabel">Edit Kopi</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="edit-coffee-form" enctype="multipart/form-data">
+              <input type="hidden" name="id">
+              <div class="mb-3"><input name="name" class="form-control" placeholder="Nama Kopi" required></div>
+              <div class="mb-3"><input name="price" type="number" class="form-control" placeholder="Harga" required></div>
+              <div class="mb-3"><input name="description" class="form-control" placeholder="Deskripsi"></div>
+              <div class="mb-3"><input name="image" type="file" class="form-control" accept="image/*"></div>
+              <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProductModalLabel">Edit Produk</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="edit-product-form" enctype="multipart/form-data">
+              <input type="hidden" name="id">
+              <div class="mb-3"><input name="name" class="form-control" placeholder="Nama Produk" required></div>
+              <div class="mb-3"><input name="price" type="number" class="form-control" placeholder="Harga" required></div>
+              <div class="mb-3"><input name="description" class="form-control" placeholder="Deskripsi"></div>
+              <div class="mb-3"><input name="image" type="file" class="form-control" accept="image/*"></div>
+              <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API = "http://localhost:5001";
+
+    // Menu Functions
+    const menuForm = document.getElementById("menu-form");
+    const menuBody = document.querySelector("#menu-table tbody");
+    const editCoffeeForm = document.getElementById("edit-coffee-form");
+    const editCoffeeModal = new bootstrap.Modal(document.getElementById("editCoffeeModal"));
+
+    menuForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const form = new FormData(menuForm);
+      fetch(`${API}/api/menu`, { method: "POST", body: form })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message || data.error || "Berhasil menambahkan kopi!");
+          menuForm.reset();
+          loadMenu();
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          alert("Gagal menambahkan kopi.");
+        });
+    });
+
+    editCoffeeForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const form = new FormData(editCoffeeForm);
+      const id = form.get("id");
+      fetch(`${API}/api/menu/${id}`, { method: "PUT", body: form })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message || data.error || "Berhasil memperbarui kopi!");
+          editCoffeeModal.hide();
+          loadMenu();
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          alert("Gagal memperbarui kopi.");
+        });
+    });
+
+    function loadMenu() {
+      fetch(`${API}/api/menu`)
+        .then(res => res.json())
+        .then(data => {
+          menuBody.innerHTML = "";
+          data.forEach(c => {
+            menuBody.innerHTML += `
+              <tr>
+                <td>${c.name}</td>
+                <td>Rp ${Number(c.price).toLocaleString('id-ID')}</td>
+                <td>${c.description || ''}</td>
+                <td><img src="${c.image_url}" alt="${c.name}"></td>
+                <td>
+                  <button class="btn btn-warning btn-sm me-1" onclick="editCoffee(${c.id}, '${c.name}', ${c.price}, '${c.description || ''}')">Edit</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteMenu(${c.id})">Hapus</button>
+                </td>
+              </tr>`;
+          });
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          menuBody.innerHTML = "<tr><td colspan='5'>Gagal memuat data.</td></tr>";
+        });
+    }
+
+    function editCoffee(id, name, price, description) {
+      editCoffeeForm.querySelector("[name='id']").value = id;
+      editCoffeeForm.querySelector("[name='name']").value = name;
+      editCoffeeForm.querySelector("[name='price']").value = price;
+      editCoffeeForm.querySelector("[name='description']").value = description;
+      editCoffeeModal.show();
+    }
+
+    function deleteMenu(id) {
+      if (confirm("Yakin ingin menghapus kopi ini?")) {
+        fetch(`${API}/api/menu/${id}`, { method: "DELETE" })
+          .then(res => res.json())
+          .then(data => {
+            alert(data.message || "Kopi dihapus!");
+            loadMenu();
+          })
+          .catch(err => {
+            console.error("Error:", err);
+            alert("Gagal menghapus kopi.");
+          });
+      }
+    }
+
+    // Product Functions
+    const productForm = document.getElementById("product-form");
+    const productBody = document.querySelector("#product-table tbody");
+    const editProductForm = document.getElementById("edit-product-form");
+    const editProductModal = new bootstrap.Modal(document.getElementById("editProductModal"));
+
+    productForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const form = new FormData(productForm);
+      fetch(`${API}/api/products`, { method: "POST", body: form })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message || data.error || "Berhasil menambahkan produk!");
+          productForm.reset();
+          loadProducts();
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          alert("Gagal menambahkan produk.");
+        });
+    });
+
+    editProductForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const form = new FormData(editProductForm);
+      const id = form.get("id");
+      fetch(`${API}/api/products/${id}`, { method: "PUT", body: form })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message || data.error || "Berhasil memperbarui produk!");
+          editProductModal.hide();
+          loadProducts();
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          alert("Gagal memperbarui produk.");
+        });
+    });
+
+    function loadProducts() {
+      fetch(`${API}/api/products`)
+        .then(res => res.json())
+        .then(data => {
+          productBody.innerHTML = "";
+          data.forEach(p => {
+            productBody.innerHTML += `
+              <tr>
+                <td>${p.name}</td>
+                <td>Rp ${Number(p.price).toLocaleString('id-ID')}</td>
+                <td>${p.description || ''}</td>
+                <td><img src="${p.image_url}" alt="${p.name}"></td>
+                <td>
+                  <button class="btn btn-warning btn-sm me-1" onclick="editProduct(${p.id}, '${p.name}', ${p.price}, '${p.description || ''}')">Edit</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">Hapus</button>
+                </td>
+              </tr>`;
+          });
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          productBody.innerHTML = "<tr><td colspan='5'>Gagal memuat data.</td></tr>";
+        });
+    }
+
+    function editProduct(id, name, price, description) {
+      editProductForm.querySelector("[name='id']").value = id;
+      editProductForm.querySelector("[name='name']").value = name;
+      editProductForm.querySelector("[name='price']").value = price;
+      editProductForm.querySelector("[name='description']").value = description;
+      editProductModal.show();
+    }
+
+    function deleteProduct(id) {
+      if (confirm("Yakin ingin menghapus produk ini?")) {
+        fetch(`${API}/api/products/${id}`, { method: "DELETE" })
+          .then(res => res.json())
+          .then(data => {
+            alert(data.message || "Produk dihapus!");
+            loadProducts();
+          })
+          .catch(err => {
+            console.error("Error:", err);
+            alert("Gagal menghapus produk.");
+          });
+      }
+    }
+
+    // Initial Load
+    loadMenu();
+    loadProducts();
+  </script>
+</body>
+</html>

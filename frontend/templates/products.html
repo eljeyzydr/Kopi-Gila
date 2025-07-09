@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Produk Gila Kopi</h2>
+    <div class="row" id="products-container"></div>
+</div>
+
+<script>
+fetch('http://localhost:5001/api/products') // ✅ Sesuaikan port
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    return res.json();
+  })
+  .then(data => {
+    const container = document.getElementById('products-container');
+    if (data.length === 0) {
+      container.innerHTML = "<p>No products found.</p>";
+    } else {
+      data.forEach(item => {
+        const productCard = document.createElement('div');
+        productCard.className = 'col-md-4 mb-4';
+        productCard.innerHTML = `
+          <div class="card h-100" style="background-color: rgba(255,255,255,0.9); color: black;">
+            <img src="${item.image_url}" class="card-img-top" alt="${item.name}">
+            <div class="card-body">
+              <h5>${item.name}</h5>
+              <p>${item.description}</p>
+              <p><strong>Rp ${Number(item.price).toLocaleString('id-ID')}</strong></p>
+              <button class="btn btn-sm btn-warning" onclick="addToCart(${item.id})">Beli</button>
+            </div>
+          </div>`;
+        container.appendChild(productCard);
+      });
+    }
+  })
+  .catch(err => {
+    console.error("Error fetching products:", err);
+    document.getElementById('products-container').innerHTML = "<p>Failed to load products.</p>";
+  });
+
+// Fungsi untuk menambahkan ke keranjang
+function addToCart(productId) {
+  fetch('http://localhost:5001/api/cart', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      product_id: productId,  // ✅ FIXED
+      quantity: 1
+    })
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Failed to add to cart");
+    }
+    return res.json();
+  })
+  .then(data => {
+    alert("Produk berhasil dimasukkan ke keranjang!");
+    console.log("Success:", data);
+  })
+  .catch(err => {
+    alert("Gagal menambahkan ke keranjang.");
+    console.error("Error:", err);
+  });
+}
+
+</script>
+{% endblock %}

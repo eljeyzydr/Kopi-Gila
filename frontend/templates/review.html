@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review - Gila Kopi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 25%, #CD853F 50%, #DEB887 75%, #F5DEB3 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Coffee beans background pattern */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(101, 67, 33, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 80% 80%, rgba(139, 69, 19, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 40% 40%, rgba(160, 82, 45, 0.1) 2px, transparent 2px);
+            background-size: 40px 40px, 60px 60px, 80px 80px;
+            animation: float 20s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Wood texture overlay */
+        .wood-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 40%,
+                rgba(139, 69, 19, 0.1) 42%,
+                rgba(139, 69, 19, 0.1) 44%,
+                transparent 46%
+            );
+            background-size: 30px 30px;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            color: #FFFFFF;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 8px rgba(101, 67, 33, 0.7);
+            position: relative;
+            font-weight: 700;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #DEB887, #F5DEB3, #DEB887);
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(101, 67, 33, 0.3);
+        }
+
+        .coffee-icon {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 2.5rem;
+            color: #F5DEB3;
+            animation: steam 3s ease-in-out infinite;
+        }
+
+        @keyframes steam {
+            0%, 100% { transform: rotate(-3deg) scale(1); }
+            50% { transform: rotate(3deg) scale(1.05); }
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 35px;
+            margin-bottom: 80px;
+        }
+
+        .card {
+            background: rgba(245, 222, 179, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 
+                0 15px 35px rgba(101, 67, 33, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            border: 2px solid rgba(139, 69, 19, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #8B4513, #A0522D, #CD853F);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #8B4513 30%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 25px 50px rgba(101, 67, 33, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            background: rgba(245, 222, 179, 1);
+        }
+
+        .card h3 {
+            color: #654321;
+            font-size: 1.5rem;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .card h3::before {
+            content: '👤';
+            margin-right: 12px;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .card p {
+            color: #6B4423;
+            line-height: 1.7;
+            margin-bottom: 18px;
+            font-style: italic;
+            font-size: 1.05rem;
+        }
+
+        .card p:last-child {
+            font-size: 1.4rem;
+            margin-bottom: 0;
+            font-style: normal;
+            text-align: center;
+            padding: 10px;
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 10px;
+        }
+
+        .divider {
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(139, 69, 19, 0.3), 
+                rgba(160, 82, 45, 0.5), 
+                rgba(139, 69, 19, 0.3), 
+                transparent);
+            margin: 80px 0;
+            border-radius: 2px;
+        }
+
+        .review-form {
+            background: rgba(245, 222, 179, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 
+                0 25px 50px rgba(101, 67, 33, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(139, 69, 19, 0.2);
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .review-form::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #8B4513, #A0522D, #CD853F);
+            border-radius: 25px;
+            z-index: -1;
+        }
+
+        .review-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #654321;
+            font-size: 1.15rem;
+        }
+
+        .review-form input,
+        .review-form textarea,
+        .review-form select {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 15px;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            color: #654321;
+            font-family: inherit;
+        }
+
+        .review-form input:focus,
+        .review-form textarea:focus,
+        .review-form select:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.15);
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .review-form textarea {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        .review-form button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(101, 67, 33, 0.3);
+        }
+
+        .review-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(101, 67, 33, 0.4);
+            background: linear-gradient(135deg, #A0522D 0%, #CD853F 50%, #DEB887 100%);
+        }
+
+        .review-form button:active {
+            transform: translateY(-1px);
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: none;
+            animation: slideIn 0.5s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: none;
+            animation: slideIn 0.5s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading button {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            cursor: not-allowed;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 15px;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .card-container {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .review-form {
+                padding: 35px 25px;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(139, 69, 19, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #A0522D, #CD853F);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background overlays -->
+    <div class="bg-overlay"></div>
+    <div class="wood-overlay"></div>
+
+    <div class="container">
+        <h2 class="section-title">
+            <span class="coffee-icon">☕</span>
+            Review Pelanggan
+        </h2>
+
+        <div class="card-container" id="reviewContainer">
+            <!-- Reviews will be dynamically inserted here -->
+        </div>
+
+        <div class="divider"></div>
+
+        <h2 class="section-title">
+            <span class="coffee-icon">✍️</span>
+            Tulis Review Kamu
+        </h2>
+
+        <form class="review-form" id="reviewForm">
+            <div class="success-message" id="successMessage">
+                ✅ Review berhasil dikirim! Terima kasih atas feedback Anda.
+            </div>
+            <div class="error-message" id="errorMessage">
+                ❌ Terjadi kesalahan. Silakan coba lagi.
+            </div>
+
+            <label for="name">Nama:</label>
+            <input type="text" id="name" name="name" required placeholder="Masukkan nama Anda...">
+
+            <label for="review">Ulasan:</label>
+            <textarea id="review" name="review" rows="4" required placeholder="Ceritakan pengalaman Anda di Gila Kopi..."></textarea>
+
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="">Pilih Rating</option>
+                <option value="5">⭐️⭐️⭐️⭐️⭐️ (Sangat Puas)</option>
+                <option value="4">⭐️⭐️⭐️⭐️ (Puas)</option>
+                <option value="3">⭐️⭐️⭐️ (Cukup)</option>
+                <option value="2">⭐️⭐️ (Kurang Puas)</option>
+                <option value="1">⭐️ (Tidak Puas)</option>
+            </select>
+
+            <button type="submit">Kirim Review</button>
+        </form>
+    </div>
+
+    <script>
+        // Function to render stars based on rating
+        function renderStars(rating) {
+            return '⭐️'.repeat(rating);
+        }
+
+        // Function to fetch and display reviews
+        function fetchReviews() {
+            fetch('http://localhost:5001/api/reviews')
+                .then(response => response.json())
+                .then(reviews => {
+                    const container = document.getElementById('reviewContainer');
+                    container.innerHTML = ''; // Clear existing reviews
+                    reviews.forEach(review => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            <h3>${review.name}</h3>
+                            <p>"${review.review_text}"</p>
+                            <p>${renderStars(review.rating)}</p>
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching reviews:', error);
+                });
+        }
+
+        // Form submission handling
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const name = document.getElementById('name').value;
+            const review = document.getElementById('review').value;
+            const rating = document.getElementById('rating').value;
+
+            // Add loading state
+            form.classList.add('loading');
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            // Submit review to backend
+            fetch('http://localhost:5001/api/reviews', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, review, rating })
+            })
+            .then(response => response.json())
+            .then(data => {
+                form.classList.remove('loading');
+                if (data.message) {
+                    successMessage.style.display = 'block';
+                    form.reset();
+                    fetchReviews(); // Refresh reviews after submission
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                } else {
+                    errorMessage.textContent = `❌ ${data.error || 'Terjadi kesalahan. Silakan coba lagi.'}`;
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                form.classList.remove('loading');
+                errorMessage.textContent = '❌ Koneksi gagal. Silakan coba lagi.';
+                errorMessage.style.display = 'block';
+                console.error('Error submitting review:', error);
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            });
+        });
+
+        // Fetch reviews on page load
+        document.addEventListener('DOMContentLoaded', fetchReviews);
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
